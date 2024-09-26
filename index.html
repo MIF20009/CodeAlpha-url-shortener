@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+</head>
+<body>
+    <h1>URL Shortener</h1>
+    <form id="shortenForm">
+        <label for="url">Enter URL:</label>
+        <input type="text" id="url" name="url" required>
+        <button type="submit">Shorten URL</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('shortenForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const url = document.getElementById('url').value;
+            try {
+                const response = await fetch('/api/shorten', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url })
+                });
+                const data = await response.json();
+                document.getElementById('result').innerText = response.ok
+                    ? `Shortened URL: ${data.shortUrl.shortUrl}`
+                    : `Error: ${data.error}`;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'Error shortening URL';
+            }
+        });
+    </script>
+</body>
+</html>
